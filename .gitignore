@@ -7,3 +7,4 @@ vplantuml
 *.dylib
 *.dll
 vls.log
+py_plantuml
