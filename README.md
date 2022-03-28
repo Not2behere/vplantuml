@@ -1,7 +1,7 @@
 # Small and minimalist Plantuml cli written with V
 
 Using the deflate algorythm.
-Started with the hex encode at first, so it is also implemented but not used for links length.
+Started with the hex encode at first, so it is also implemented but not used since it generates shorter links from deflate.
 
 
 ## Usage
