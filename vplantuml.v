@@ -15,10 +15,17 @@ fn main() {
 	}	
 	cmd.add_flag(Flag{
 		flag: .string_array
-		required: true
-		name: 'Plantuml string'
+		required: false
+		name: 'string'
 		abbrev: 's'
-		description: 'Plantuml text'
+		description: 'Plantuml string'
+	})
+	cmd.add_flag(Flag{
+		flag: .string
+		required: false
+		name: 'file'
+		abbrev: 'f'
+		description: 'Plantuml file'
 	})
 
 	cmd.setup()
@@ -26,17 +33,38 @@ fn main() {
 }
 
 fn get_url(cmd Command) ? {
-	plantuml_text := cmd.flags.get_strings(r"Plantuml string") or { panic('Failed to get `Plantuml string` flag: $err') }
-	
+	plantuml_string := cmd.flags.get_strings("string") or { panic('Failed to get `Plantuml string` flag: $err') }
+	plantuml_file := cmd.flags.get_string("file") or { panic('Failed to get `Plantuml file` flag: $err') }
+
+	mut plantuml_text := ''
+	if plantuml_string != [] {
+		plantuml_text = plantuml_string.join("")
+	} else if plantuml_file != ''{
+		if os.is_file(plantuml_file) {
+			r := os.read_lines(plantuml_file) ?
+			plantuml_text = r.join('\n')
+		}
+		else {
+			println('No such file in your path')
+			return
+		}
+	}
+	else {
+		println('You must provide a diagram as string or filename.txt file')
+		return
+	}
+
 	config := http.FetchConfig{
 		user_agent: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0'
 	}
-	url := get_deflate_url(plantuml_text.join(""))
+
+	url := get_deflate_url(plantuml_text)
 	
 	_ := http.fetch(http.FetchConfig{ ...config, url: url}) or {
 		println('Failed to connect the server')
 		return 
 	}
+
 	println(url)
 
 }
