@@ -27,7 +27,7 @@ fn main() {
 
 fn get_url(cmd Command) ? {
 	plantuml_text := cmd.flags.get_string('Plantuml string') or { panic('Failed to get `Plantuml string` flag: $err') }
-	
+	plantuml_text.str()
 	config := http.FetchConfig{
 		user_agent: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0'
 	}
@@ -43,7 +43,6 @@ fn get_url(cmd Command) ? {
 
 fn get_hex_url (plantuml_text string) string {
 
-
 	// Convert text to hex
 	mut hex := []string{}
 	for i, _ in plantuml_text {
@@ -53,15 +52,13 @@ fn get_hex_url (plantuml_text string) string {
 	// '~h' to tell that's hex encoding format
 	url := 'http://www.plantuml.com/plantuml/svg/~h' + hex.join('')
 	
-
-	
 	return url
 }
 
 fn get_deflate_url(plantuml_text string) string {
 	// Compress with zlib
 	zlibbed_str := zlib.compress(plantuml_text.bytes()) or {
-		return 'Failed to comrpess with Zlib'
+		return 'Failed to compress with Zlib'
 	}
 	// See https://github.com/dougn/python-plantuml
 	truncated_string := zlibbed_str#[2..-4]
