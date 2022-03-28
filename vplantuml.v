@@ -1,10 +1,10 @@
 module main
-//import json (maybe for some parsing later)
+
+// import json (maybe for some parsing later)
 import net.http
 import compress.zlib
 import cli { Command, Flag }
 import os
-
 
 fn main() {
 	mut cmd := Command{
@@ -12,7 +12,7 @@ fn main() {
 		description: 'Generate plantuml diagram links from string using plantuml server'
 		version: '0.1.0'
 		execute: get_url
-	}	
+	}
 	cmd.add_flag(Flag{
 		flag: .string_array
 		required: false
@@ -33,23 +33,25 @@ fn main() {
 }
 
 fn get_url(cmd Command) ? {
-	plantuml_string := cmd.flags.get_strings("string") or { panic('Failed to get `Plantuml string` flag: $err') }
-	plantuml_file := cmd.flags.get_string("file") or { panic('Failed to get `Plantuml file` flag: $err') }
+	plantuml_string := cmd.flags.get_strings('string') or {
+		panic('Failed to get `Plantuml string` flag: $err')
+	}
+	plantuml_file := cmd.flags.get_string('file') or {
+		panic('Failed to get `Plantuml file` flag: $err')
+	}
 
 	mut plantuml_text := ''
 	if plantuml_string != [] {
-		plantuml_text = plantuml_string.join("")
-	} else if plantuml_file != ''{
+		plantuml_text = plantuml_string.join('')
+	} else if plantuml_file != '' {
 		if os.is_file(plantuml_file) {
 			r := os.read_lines(plantuml_file) ?
 			plantuml_text = r.join('\n')
-		}
-		else {
+		} else {
 			println('No such file in your path')
 			return
 		}
-	}
-	else {
+	} else {
 		println('You must provide a diagram as string or filename.txt file')
 		return
 	}
@@ -59,18 +61,16 @@ fn get_url(cmd Command) ? {
 	}
 
 	url := get_deflate_url(plantuml_text)
-	
-	_ := http.fetch(http.FetchConfig{ ...config, url: url}) or {
+
+	_ := http.fetch(http.FetchConfig{ ...config, url: url }) or {
 		println('Failed to connect the server')
-		return 
+		return
 	}
 
 	println(url)
-
 }
 
-fn get_hex_url (plantuml_text string) string {
-
+fn get_hex_url(plantuml_text string) string {
 	// Convert text to hex
 	mut hex := []string{}
 	for i, _ in plantuml_text {
@@ -79,15 +79,13 @@ fn get_hex_url (plantuml_text string) string {
 	}
 	// '~h' to tell that's hex encoding format
 	url := 'http://www.plantuml.com/plantuml/svg/~h' + hex.join('')
-	
+
 	return url
 }
 
 fn get_deflate_url(plantuml_text string) string {
 	// Compress with zlib
-	zlibbed_str := zlib.compress(plantuml_text.bytes()) or {
-		return 'Failed to compress with Zlib'
-	}
+	zlibbed_str := zlib.compress(plantuml_text.bytes()) or { return 'Failed to compress with Zlib' }
 	// See https://github.com/dougn/python-plantuml
 	truncated_string := zlibbed_str#[2..-4]
 
@@ -98,15 +96,15 @@ fn get_deflate_url(plantuml_text string) string {
 
 // 3 above functions are converted from Javascript:
 // https://plantuml.com/code-javascript-synchronous
-fn encode_plantuml(data []byte) string{
-	mut r := ""
+fn encode_plantuml(data []byte) string {
+	mut r := ''
 	for i := 0; i < data.len; i += 3 {
-		if i+2 == data.len {
-			r += append_3_bytes(data[i], data[i+1], 0)
-		} else if i+1 == data.len {
+		if i + 2 == data.len {
+			r += append_3_bytes(data[i], data[i + 1], 0)
+		} else if i + 1 == data.len {
 			r += append_3_bytes(data[i], 0, 0)
 		} else {
-			r += append_3_bytes(data[i], data[i+1], data[i+2])
+			r += append_3_bytes(data[i], data[i + 1], data[i + 2])
 		}
 	}
 	return r
@@ -118,7 +116,7 @@ fn append_3_bytes(b1 byte, b2 byte, b3 byte) string {
 	c3 := ((b2 & 0xF) << 2) | (b3 >> 6)
 	c4 := b3 & 0x3F
 
-	mut r := ""
+	mut r := ''
 	r += encode_6_bit(c1 & 0x3F)
 	r += encode_6_bit(c2 & 0x3F)
 	r += encode_6_bit(c3 & 0x3F)
@@ -127,7 +125,7 @@ fn append_3_bytes(b1 byte, b2 byte, b3 byte) string {
 	return r
 }
 
-fn encode_6_bit(b byte) string{
+fn encode_6_bit(b byte) string {
 	mut c := b
 	if c < 10 {
 		return (48 + c).ascii_str()
