@@ -8,3 +8,5 @@ vplantuml
 *.dll
 vls.log
 py_plantuml.py
+deflate.v
+
