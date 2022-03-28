@@ -14,7 +14,7 @@ fn main() {
 		execute: get_url
 	}	
 	cmd.add_flag(Flag{
-		flag: .string
+		flag: .string_array
 		required: true
 		name: 'Plantuml string'
 		abbrev: 's'
@@ -26,13 +26,13 @@ fn main() {
 }
 
 fn get_url(cmd Command) ? {
-	plantuml_text := cmd.flags.get_string('Plantuml string') or { panic('Failed to get `Plantuml string` flag: $err') }
-	plantuml_text.str()
+	plantuml_text := cmd.flags.get_strings(r"Plantuml string") or { panic('Failed to get `Plantuml string` flag: $err') }
+	
 	config := http.FetchConfig{
 		user_agent: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0'
 	}
-	url := get_deflate_url(plantuml_text)
-		
+	url := get_deflate_url(plantuml_text.join(""))
+	
 	_ := http.fetch(http.FetchConfig{ ...config, url: url}) or {
 		println('Failed to connect the server')
 		return 

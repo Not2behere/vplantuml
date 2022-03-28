@@ -1,0 +1,4 @@
+@startuml
+Justin -> Bouboune: Kiss Request
+Bouboune --> Justin: Kiss Response
+@enduml

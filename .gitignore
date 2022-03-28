@@ -7,6 +7,5 @@ vplantuml
 *.dylib
 *.dll
 vls.log
-py_plantuml.py
-deflate.v
+plantuml_file
 
