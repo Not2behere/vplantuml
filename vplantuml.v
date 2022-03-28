@@ -11,36 +11,39 @@ fn main() {
 		name: 'V-Plantuml!'
 		description: 'Generate plantuml diagram links from string using plantuml server'
 		version: '0.1.0'
-	}
-	mut get_url_cmd := Command{
-		name: 'get_url'
-		description: 'Prints resulting diagram link'
-		usage: '<name>'
-		required_args: 1
 		execute: get_url
-	} 
-	
+	}	
+	cmd.add_flag(Flag{
+		flag: .string
+		required: true
+		name: 'Plantuml string'
+		abbrev: 's'
+		description: 'Plantuml text'
+	})
 
-	plantuml_text := "@startuml\nJustin -> Bouboune: Kiss Request\nBouboune --> Justin: Kiss Response\n@enduml"
-
-	url := get_hex_url(plantuml_text)
-	
-	url2 := get_deflate_url(plantuml_text)
-	
-	cmd.add_command(get_url_cmd)
 	cmd.setup()
 	cmd.parse(os.args)
 }
 
 fn get_url(cmd Command) ? {
+	plantuml_text := cmd.flags.get_string('Plantuml string') or { panic('Failed to get `Plantuml string` flag: $err') }
+	
+	config := http.FetchConfig{
+		user_agent: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0'
+	}
+	url := get_deflate_url(plantuml_text)
+		
+	_ := http.fetch(http.FetchConfig{ ...config, url: url}) or {
+		println('Failed to connect the server')
+		return 
+	}
+	println(url)
 
 }
 
 fn get_hex_url (plantuml_text string) string {
 
-	config := http.FetchConfig{
-		user_agent: 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0'
-	}
+
 	// Convert text to hex
 	mut hex := []string{}
 	for i, _ in plantuml_text {
@@ -50,9 +53,7 @@ fn get_hex_url (plantuml_text string) string {
 	// '~h' to tell that's hex encoding format
 	url := 'http://www.plantuml.com/plantuml/svg/~h' + hex.join('')
 	
-	_ := http.fetch(http.FetchConfig{ ...config, url: url}) or {
-		return 'Failed to connect the server'
-	}
+
 	
 	return url
 }
