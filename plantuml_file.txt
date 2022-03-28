@@ -1,4 +1,4 @@
 @startuml
-Justin -> Bouboune: Kiss Request
-Bouboune --> Justin: Kiss Response
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
 @enduml
