@@ -6,16 +6,20 @@ Started with the hex encode at first, so it is also implemented but not used for
 
 ## Usage
 
-From string:
+From string (do not forget the quotation mark):
 ```shell ignore
 ./vplantuml -s "@startuml
 Alice -> Bob: Authentication Request
 Bob --> Alice: Authentication Response
 @enduml"
 ```
-From File (only .txt):
+From File (.txt):
 ```shell ignore
-./vplantuml -f "plantuml_file.txt"
+./vplantuml -f plantuml_file.txt
+```
+From File with output saved as svg:
+```shell ignore
+./vplantuml -o -f plantuml_file.txt
 ```
 
 Outputs using the same text:
@@ -25,5 +29,5 @@ http://www.plantuml.com/plantuml/svg/1K313O0W3FmpHHTW0Hz67C4D42-n2RGgr_tDDba_nkY
 
 ## Limitation
 
-Only provide the link from Plantuml default server and no saving of output diagrams.
+Output diagrams are saved as svg at root of the folder with the same name of file or ".svg" from string.
 Only written and tested on Arch Linux(Manjaro).
