@@ -29,6 +29,8 @@ Outputs using the same text:
 http://www.plantuml.com/plantuml/svg/1K313O0W3FmpHHTW0Hz67C4D42-n2RGgr_tDDba_nkYfT6sGlChkvo8bUCEehLBTvC0Rc4oxdvBpAgLhmo8bUCEehLBTvC1yt2RI1hjYz1y0
 ```
 
+![PlantUML model](http://www.plantuml.com/plantuml/svg/1K313O0W3FmpHHTW0Hz67C4D42-n2RGgr_tDDba_nkYfT6sGlChkvo8bUCEehLBTvC0Rc4oxdvBpAgLhmo8bUCEehLBTvC1yt2RI1hjYz1y0)
+
 Or else, use `v run` e.g.:
 ```shell ignore
 v run . -f plantuml_file.txt
