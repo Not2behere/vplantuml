@@ -45,7 +45,7 @@ fn get_diagram(cmd Command) ? {
 	plantuml_file := cmd.flags.get_string('file') or {
 		panic('Failed to get `Plantuml file` flag: $err')
 	}
-	out_bool := cmd.flags.get_bool('output') ? // This one is optional for output file
+	out_bool := cmd.flags.get_bool('output') ? // Optional for output file
 
 	mut plantuml_text := ''
 	if plantuml_string != [] {
