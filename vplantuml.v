@@ -163,7 +163,7 @@ fn encode_6_bit(b byte) string {
 	return '?'
 }
 
-fn process_out_file (fname string, t string) {
+fn process_out_file(fname string, t string) {
 	out_file := fname#[0..-3] + 'svg'
 	mut f := os.create(out_file) or {
 		println(err)
