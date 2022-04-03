@@ -1,6 +1,5 @@
 module main
 
-// import json (maybe for some parsing later)
 import net.http
 import compress.zlib
 import cli { Command, Flag }
@@ -51,6 +50,10 @@ fn get_diagram(cmd Command) ? {
 
 	mut plantuml_text := ''
 	if plantuml_string != [] {
+		if plantuml_string == ['-f'] {
+			println('Cannot combine "-s" and "-f" flags')
+			return
+		}
 		plantuml_text = plantuml_string.join('')
 	} else if plantuml_file != '' {
 		if os.is_file(plantuml_file) {
@@ -61,7 +64,7 @@ fn get_diagram(cmd Command) ? {
 			return
 		}
 	} else {
-		println('You must provide a diagram as string or filename.txt file')
+		println('You must provide a diagram as string("-s") OR filename.txt file("-f")')
 		return
 	}
 
