@@ -7,5 +7,4 @@ vplantuml
 *.dylib
 *.dll
 vls.log
-plantuml_file
 

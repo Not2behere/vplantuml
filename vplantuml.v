@@ -11,7 +11,8 @@ fn main() {
 		name: 'V-Plantuml!'
 		description: 'Generate plantuml diagram links from string using plantuml server'
 		version: '0.1.0'
-		execute: get_url
+		execute: get_diagram
+		required_args: 0
 	}
 	cmd.add_flag(Flag{
 		flag: .string_array
@@ -27,18 +28,26 @@ fn main() {
 		abbrev: 'f'
 		description: 'Plantuml file'
 	})
+	cmd.add_flag(Flag{
+		flag: .bool
+		name: 'output'
+		abbrev: 'o'
+		description: 'Output file diagram'
+	})
 
 	cmd.setup()
 	cmd.parse(os.args)
 }
 
-fn get_url(cmd Command) ? {
+fn get_diagram(cmd Command) ? {
 	plantuml_string := cmd.flags.get_strings('string') or {
 		panic('Failed to get `Plantuml string` flag: $err')
 	}
 	plantuml_file := cmd.flags.get_string('file') or {
 		panic('Failed to get `Plantuml file` flag: $err')
 	}
+
+	out_bool := cmd.flags.get_bool('output') ? // This one is optional for output file
 
 	mut plantuml_text := ''
 	if plantuml_string != [] {
@@ -62,9 +71,13 @@ fn get_url(cmd Command) ? {
 
 	url := get_deflate_url(plantuml_text)
 
-	_ := http.fetch(http.FetchConfig{ ...config, url: url }) or {
+	resp := http.fetch(http.FetchConfig{ ...config, url: url }) or {
 		println('Failed to connect the server')
 		return
+	}
+
+	if out_bool {
+		process_out_file(plantuml_file, resp.text)
 	}
 
 	println(url)
@@ -94,7 +107,7 @@ fn get_deflate_url(plantuml_text string) string {
 	return 'http://www.plantuml.com/plantuml/svg/' + encoded
 }
 
-// 3 above functions are converted from Javascript:
+// 3 below functions are converted from Javascript:
 // https://plantuml.com/code-javascript-synchronous
 fn encode_plantuml(data []byte) string {
 	mut r := ''
@@ -146,4 +159,16 @@ fn encode_6_bit(b byte) string {
 		return '_'
 	}
 	return '?'
+}
+
+fn process_out_file (fname string, t string) {
+	out_file := fname#[0..-3] + 'svg'
+	mut f := os.create(out_file) or {
+		println(err)
+		return
+	}
+	if os.is_file(out_file) {
+		f.write_string(t) or { println(err) }
+	}
+	f.close()
 }
