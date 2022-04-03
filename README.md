@@ -1,7 +1,7 @@
 # Small and minimalist Plantuml cli written with V
 
 Using the deflate algorythm.
-Started with the hex encode at first, so it is also implemented but not used for links length.
+Started with the hex encode at first, so it is also implemented but not used since it generates shorter links from deflate.
 
 
 ## Usage
@@ -29,5 +29,10 @@ http://www.plantuml.com/plantuml/svg/1K313O0W3FmpHHTW0Hz67C4D42-n2RGgr_tDDba_nkY
 
 ## Limitation
 
+<<<<<<< HEAD
 Output diagrams are saved as svg at root of the folder with the same name of file or ".svg" from string.
 Only written and tested on Arch Linux(Manjaro).
+=======
+Only provide the link from Plantuml default server and no saving of output diagrams.
+Only written and tested on Arch Linux(Manjaro).
+>>>>>>> 86e93d9058f11bfa038019fe98580e1de75ed93b
