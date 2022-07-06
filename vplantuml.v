@@ -45,7 +45,7 @@ fn get_diagram(cmd Command) ? {
 	plantuml_file := cmd.flags.get_string('file') or {
 		panic('Failed to get `Plantuml file` flag: $err')
 	}
-	out_bool := cmd.flags.get_bool('output') ? // Optional for output file
+	out_bool := cmd.flags.get_bool('output')? // Optional for output file
 
 	mut plantuml_text := ''
 	if plantuml_string != [] {
@@ -56,7 +56,7 @@ fn get_diagram(cmd Command) ? {
 		plantuml_text = plantuml_string.join('')
 	} else if plantuml_file != '' {
 		if os.is_file(plantuml_file) {
-			r := os.read_lines(plantuml_file) ?
+			r := os.read_lines(plantuml_file)?
 			plantuml_text = r.join('\n')
 		} else {
 			println('No such file in your path')
@@ -79,7 +79,7 @@ fn get_diagram(cmd Command) ? {
 	}
 
 	if out_bool {
-		process_out_file(plantuml_file, resp.text)
+		process_out_file(plantuml_file, resp.body)
 	}
 
 	println(url)
@@ -145,15 +145,15 @@ fn encode_6_bit(b byte) string {
 	if c < 10 {
 		return (48 + c).ascii_str()
 	}
-	c -= 10
+	c = c - 10
 	if c < 26 {
 		return (65 + c).ascii_str()
 	}
-	c -= 26
+	c = c - 26
 	if c < 26 {
 		return (97 + c).ascii_str()
 	}
-	c -= 26
+	c = c - 26
 	if c == 0 {
 		return '-'
 	}
